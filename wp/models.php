@@ -15,6 +15,8 @@ use mtv\models\Model,
     BadMethodCallException,
     WP_Query;
 
+require_once(ABSPATH . WPINC . '/ms-functions.php');
+
 /**
  * Wordpress models
  **/
@@ -108,27 +110,27 @@ class Post extends Model {
             unset($data['id']);
         }
 
-        switch_to_blog( $blogid );
+        // \switch_to_blog( $blogid );
 
-        $postid = wp_insert_post( $data, true );
+        $postid = \wp_insert_post( $data, true );
 
-        if ( is_wp_error( $postid ) )
+        if ( \is_wp_error( $postid ) )
             throw new WPException( $postid );
         else if ( $postid == 0 )
             throw new JsonableException(__("Couldn't update the post"));
 
         if ( ! empty( $meta ) ) {
             foreach ( $meta as $key => $val ) 
-                update_post_meta( $postid, $key, $val );
+                \update_post_meta( $postid, $key, $val );
         }
 
         if ( isset($post_format) ) {
-            $result = set_post_format( $postid, $post_format );
-            if ( is_wp_error( $result ) )
+            $result = \set_post_format( $postid, $post_format );
+            if ( \is_wp_error( $result ) )
                 throw new WPException( $result );
         }
 
-        restore_current_blog();
+        // \restore_current_blog();
 
         $this->id = $postid;
         $this->fetch(); // We refresh the post in case any filters changed the content
@@ -142,15 +144,15 @@ class Post extends Model {
     public function fetch() {
         if ( empty($this->attributes['blogid']) || empty($this->attributes['id']) )
             throw new BadMethodCallException(__("Need a blogid and post id to fetch a post"));
-        switch_to_blog( $this->attributes['blogid'] );
-        $post = get_post( $this->attributes['id'] );
+        // \switch_to_blog( $this->attributes['blogid'] );
+        $post = \get_post( $this->attributes['id'] );
         if ( $post === NULL ) {
-            restore_current_blog();
+            // \restore_current_blog();
             throw new ModelNotFound("Post", __("Post not found"));
         }
         $this->reload( $post );
 
-        restore_current_blog();
+        // \restore_current_blog();
     }
 
     public function parse( &$postdata ) {
@@ -532,7 +534,9 @@ class User extends Model {
         $ret['capabilities'] = array();
         foreach ( $ret as $k => $v ) {
             if ( $k == 'wp_capabilities' ) {
-                $ret['capabilities']['1'] = implode(array_keys($ret[$k]));
+                if (is_array($ret[$k])) {
+                    $ret['capabilities']['1'] = implode(array_keys($ret[$k]));
+                }
                 unset($ret[$k]);
             } else if ( preg_match('/wp_(\d+)_capabilities/', $k, $matches) ) {
                 $ret['capabilities'][$matches[1]] = implode(array_keys($ret[$k]));
