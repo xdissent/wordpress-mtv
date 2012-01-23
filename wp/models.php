@@ -132,7 +132,7 @@ class Post extends Model {
 
         // \restore_current_blog();
 
-        $this->id = $postid;
+        $this->attributes['id'] = $this->id = $postid;
         $this->fetch(); // We refresh the post in case any filters changed the content
 
         # TODO: WordPress seems to cache the post format and will give us
