@@ -53,7 +53,8 @@ class MTVCollectionTest extends MTVTest {
             new \mtv\models\Model(array('name' => 'two')));
 
         $ret = $this->collection->next(); // Forward one
-        $ret = $this->collection->rewind(); // Back one
+        $this->collection->rewind();
+        $ret = $this->collection->current();
 
         $this->assertEquals($ret->attributes['name'], 'one');
     }
