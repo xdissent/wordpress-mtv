@@ -22,7 +22,7 @@ $_SERVER["SERVER_NAME"] = $settings['hostname'];
 $_SERVER["REQUEST_URI"] = "/cli";
 $_SERVER["REQUEST_METHOD"] = "GET";
 
-$abspath = dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
+$abspath = isset($settings['abspath']) ? $settings['abspath'] : dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))));
 define( 'ABSPATH', $abspath . '/' );
 
 require_once(ABSPATH.'wp-config.php');

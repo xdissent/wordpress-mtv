@@ -35,7 +35,7 @@ class MTVTest extends PHPUnit_Framework_TestCase {
 
 }
 
-class MTVOutputTest extends PHPUnit_Extensions_OutputTestCase {
+class MTVOutputTest extends PHPUnit_Framework_TestCase {
 
     protected $backupGlobals = false;
 
@@ -60,7 +60,7 @@ function check_before_wreck() {
         throw new Exception('Tests require a working installation of WordPress.');
 
     // Make sure plugin is active
-    if (!is_plugin_active('mtv/wp-plugin.php'))
+    if (!is_plugin_active('mtv/wp-plugin.php') && !is_plugin_active('wordpress-mtv/wp-plugin.php'))
         throw new Exception('Tests require MTV plugin is installed and activated.');
 }
 
